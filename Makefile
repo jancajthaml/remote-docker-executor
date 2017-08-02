@@ -2,30 +2,35 @@ GROUP = $(shell whoami)
 NAME = $(shell basename $$(git rev-parse --show-toplevel))
 VERSION = $(shell cat VERSION)
 
-.PHONY: all start bootstrap image publish teardown info
-
+.PHONY: all
 all: start teardown
 
-info:
+.PHONY: help
+help:
 	@echo "\n$(GROUP)/$(NAME):$(VERSION)\n"
 	@cat README.md
 	@echo ""
 
+.PHONY: image
 image:
 	docker build -t $(GROUP)/$(NAME):$(VERSION) .
 
+.PHONY: start
 start:
-	@echo "Starting version : $(VERSION)"
-	docker run -p 8181:8181 \
+	docker run --rm \
+		--name $(NAME) \
+		-p 8181:8181 \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		\
 		$(GROUP)/$(NAME):$(VERSION)
 
+.PHONY: bootstrap
 bootstrap: 
 	$(MAKE) image
 	$(MAKE) start
 
-publish: 
+.PHONY: publish
+publish:
 	$(MAKE) image
 	\
 	git checkout -B release/$(VERSION)
@@ -41,6 +46,6 @@ publish:
 	\
 	$(MAKE) teardown
 
+.PHONY: teardown
 teardown:
-	@docker stop $(GROUP)/$(NAME)
-	@docker rm -f $(GROUP)/$(NAME)
+	@docker stop $(NAME) 2>/dev/null || :
