@@ -13,11 +13,11 @@ help:
 
 .PHONY: image
 image:
-	docker build -t $(GROUP)/$(NAME):$(VERSION) .
+	@docker build -t $(GROUP)/$(NAME):$(VERSION) .
 
 .PHONY: start
 start:
-	docker run --rm \
+	@docker run --rm \
 		--name $(NAME) \
 		-p 8181:8181 \
 		-v /var/run/docker.sock:/var/run/docker.sock \
