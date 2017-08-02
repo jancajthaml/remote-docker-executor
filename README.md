@@ -5,16 +5,21 @@ Manage docker containers with remote executor via HTTP API.
 
 ## Start
 
-`docker run -p 8181:8181 -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc jancajthaml/docker_executor`
+`docker run -p 8181:8181 -v /var/run/docker.sock:/var/run/docker.sock jancajthaml/remote-docker-executor`
 
-## Create service
+## Containers management
+### Create Container
 
-`curl -X POST -H "Content-Type: application/json" -d '{"image": "nginx", "port": 8080}' "http://localhost:8181/services/${SERVICE_NAME}"`
+`curl -X POST -H "Content-Type: application/json" -d '{
+  "image": "golang:1.7",
+  "cmd": ["bash"],
+  "volumes": ["/var/run/docker.sock:/var/run/docker.sock", "/dev/shm:/dev/shm"]
+}' "http://localhost:8181/containers/${SERVICE_NAME}"`
 
-## Inspect Service
+### Inspect Container
 
-`curl "http://localhost:8181/services/${SERVICE_NAME}"`
+`curl "http://localhost:8181/containers/${SERVICE_NAME}"`
 
-## Remove Service
+### Remove Container
 
-`curl -X DELETE "http://localhost:8181/services/${SERVICE_NAME}"`
+`curl -X DELETE "http://localhost:8181/containers/${SERVICE_NAME}"`
