@@ -13,13 +13,7 @@ RUN go get github.com/tools/godep \
 	\
 	mkdir -p /go/src/github.com/jancajthaml/remote-docker-executor && \
 	curl https://get.docker.com/builds/Linux/x86_64/docker-1.12.1.tgz | tar zx -C /opt && \
-	ln -s /opt/docker/docker /usr/bin/docker && docker -v && \
-	\
-	echo "docker inspect -f '{{range \$p, \$conf := .NetworkSettings.Ports}}{{(index \$conf 0).HostPort}}{{end}}' \$(cat /etc/hosts | tail -1 | cut -f2) 2> /dev/null || echo 0" > /usr/local/bin/get_exposed_port && \
-	chmod +x /usr/local/bin/get_exposed_port && \
-	\
-	echo "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \$(cat /etc/hosts | tail -1 | cut -f2) 2> /dev/null || echo 0.0.0.0" > /usr/local/bin/get_ip && \
-	chmod +x /usr/local/bin/get_ip
+	ln -s /opt/docker/docker /usr/bin/docker && docker -v
 
 COPY main.go \
 	 bash.go \
